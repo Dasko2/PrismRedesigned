@@ -1,0 +1,25 @@
+plugins {
+    id 'fabric-loom' version '1.14-SNAPSHOT'
+}
+
+version = project.mod_version
+base { archivesName = 'prismfeatures-fabric' }
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+}
+
+processResources {
+    inputs.property 'version', project.version
+    filesMatching('fabric.mod.json') { expand 'version': project.version }
+}
+
+sourceSets.main.java.srcDir "src/family/${project.family}/java"
+sourceSets.main.java.srcDir "src/compat/${project.compat}/java"
+sourceSets.main.resources.srcDir "src/compat/${project.compat}/resources"
+processResources { from("../lang") { into "prismlang" } }
+
+tasks.withType(JavaCompile).configureEach { options.release = project.javaVersion.toInteger() }
+java { sourceCompatibility = JavaVersion.toVersion(project.javaVersion); targetCompatibility = JavaVersion.toVersion(project.javaVersion) }
